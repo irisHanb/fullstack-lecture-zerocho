@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Head from 'next/head';
 import AppLayout from '../components/AppLayout';
 import { Form, Button, Input, Checkbox } from 'antd';
@@ -12,30 +12,36 @@ const SignUp = () => {
   // custom hook
   const useInput = (initValue = null) => {
     const [value, setter] = useState(initValue);
-    const handler = e => {
+    const handler = useCallback(e => {
       setter(e.target.value);
-    };
+    }, []);
     return [value, handler];
   };
   const [id, onChangeId] = useInput('');
   const [nick, onChangeNick] = useInput('');
   const [password, onChangePassword] = useInput('');
 
-  const onSubmit = e => {
-    e.preventDefault();
-    if (password !== passwordCheck) setPasswordError(true);
-    if (!term) setTermError(true);
-    if (password) console.log(id, nick, password, passwordCheck, term);
-  };
+  const onSubmit = useCallback(
+    e => {
+      e.preventDefault();
+      if (password !== passwordCheck) setPasswordError(true);
+      if (!term) setTermError(true);
+    },
+    [password, passwordCheck, term]
+  );
 
-  const onChangePasswordCheck = e => {
-    setPasswordError(e.target.value !== password);
-    setPasswordCheck(e.target.value);
-  };
-  const onChangeTerm = e => {
+  const onChangePasswordCheck = useCallback(
+    e => {
+      setPasswordError(e.target.value !== password);
+      setPasswordCheck(e.target.value);
+    },
+    [password]
+  );
+
+  const onChangeTerm = useCallback(e => {
     setTermError(!e.target.checked);
     setTerm(e.target.checked);
-  };
+  });
 
   // const [id, onChangeId] = useInput('');
 
