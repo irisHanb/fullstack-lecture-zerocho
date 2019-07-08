@@ -4,13 +4,22 @@ import AppLayout from '../components/AppLayout';
 import { Form, Button, Input, Checkbox } from 'antd';
 
 const SignUp = () => {
-  const [id, setId] = useState('');
-  const [nick, setNick] = useState('');
-  const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [term, setTerm] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [termError, setTermError] = useState(false);
+
+  // custom hook
+  const useInput = (initValue = null) => {
+    const [value, setter] = useState(initValue);
+    const handler = e => {
+      setter(e.target.value);
+    };
+    return [value, handler];
+  };
+  const [id, onChangeId] = useInput('');
+  const [nick, onChangeNick] = useInput('');
+  const [password, onChangePassword] = useInput('');
 
   const onSubmit = e => {
     e.preventDefault();
@@ -18,15 +27,7 @@ const SignUp = () => {
     if (!term) setTermError(true);
     if (password) console.log(id, nick, password, passwordCheck, term);
   };
-  const onChangeId = e => {
-    setId(e.target.value);
-  };
-  const onChangeNick = e => {
-    setNick(e.target.value);
-  };
-  const onChangePassword = e => {
-    setPassword(e.target.value);
-  };
+
   const onChangePasswordCheck = e => {
     setPasswordError(e.target.value !== password);
     setPasswordCheck(e.target.value);
@@ -34,15 +35,6 @@ const SignUp = () => {
   const onChangeTerm = e => {
     setTermError(!e.target.checked);
     setTerm(e.target.checked);
-  };
-
-  // custom hook
-  const useInput = (inputValue = null) => {
-    const [value, setter] = useState(inputValue);
-    const handler = e => {
-      setter(e.target.value);
-    };
-    return [value, handler];
   };
 
   // const [id, onChangeId] = useInput('');
